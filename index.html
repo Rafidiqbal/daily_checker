@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Checkboxes with Progress Bar (Dark Mode)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #121212; color: #ffffff; }
+    input, button { background-color: #1e1e1e; color: #ffffff; border: 1px solid #444; padding: 5px; border-radius: 5px; }
+    button:hover { background-color: #333; }
+    .progress-container { width: 100%; background: #333; border-radius: 10px; margin-bottom: 15px; }
+    .progress-bar { height: 20px; background: #4caf50; width: 0%; border-radius: 10px; transition: width 0.3s; }
+    .checkbox-container { margin: 10px 0; }
+    label { color: #ffffff; }
+  </style>
+</head>
+<body>
+  <h2>Dynamic Checkboxes with Progress Bar (Dark Mode)</h2>
+  <input type="number" id="boxCount" placeholder="Enter number of boxes">
+  <button onclick="generateBoxes()">Generate</button>  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>  <div class="checkbox-container" id="checkboxContainer"></div>  <script>
+    function generateBoxes() {
+      const count = parseInt(document.getElementById('boxCount').value);
+      localStorage.setItem('boxCount', count);
+      createCheckboxes(count);
+    }
+
+    function createCheckboxes(count) {
+      const container = document.getElementById('checkboxContainer');
+      container.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const label = document.createElement('label');
+        label.style.display = 'block';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.dataset.index = i;
+        checkbox.checked = JSON.parse(localStorage.getItem('checkedBoxes') || '[]').includes(i);
+        checkbox.onchange = saveProgress;
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(' Day ' + i));
+        container.appendChild(label);
+      }
+      updateProgress();
+    }
+
+    function saveProgress() {
+      const checkboxes = document.querySelectorAll('#checkboxContainer input[type=checkbox]');
+      const checkedIndexes = [];
+      checkboxes.forEach(cb => {
+        if (cb.checked) checkedIndexes.push(parseInt(cb.dataset.index));
+      });
+      localStorage.setItem('checkedBoxes', JSON.stringify(checkedIndexes));
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('#checkboxContainer input[type=checkbox]');
+      const checked = document.querySelectorAll('#checkboxContainer input[type=checkbox]:checked').length;
+      const progress = checkboxes.length > 0 ? (checked / checkboxes.length) * 100 : 0;
+      document.getElementById('progressBar').style.width = progress + '%';
+    }
+
+    window.onload = function() {
+      const savedCount = localStorage.getItem('boxCount');
+      if (savedCount) {
+        document.getElementById('boxCount').value = savedCount;
+        createCheckboxes(parseInt(savedCount));
+      }
+    };
+  </script></body>
+</html>
