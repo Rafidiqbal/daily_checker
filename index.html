@@ -1,24 +1,116 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Checkboxes with Progress Bar (Dark Mode)</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background-color: #121212; color: #ffffff; }
-    input, button { background-color: #1e1e1e; color: #ffffff; border: 1px solid #444; padding: 5px; border-radius: 5px; }
-    button:hover { background-color: #333; }
-    .progress-container { width: 100%; background: #333; border-radius: 10px; margin-bottom: 15px; }
-    .progress-bar { height: 20px; background: #4caf50; width: 0%; border-radius: 10px; transition: width 0.3s; }
-    .checkbox-container { margin: 10px 0; }
-    label { color: #ffffff; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 20px;
+      background-color: #0d1117;
+      color: #e6edf3;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #58a6ff;
+    }
+    input, button {
+      background-color: #161b22;
+      color: #e6edf3;
+      border: 1px solid #30363d;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #21262d;
+    }
+
+    .progress-container {
+      width: 100%;
+      background: #21262d;
+      border-radius: 12px;
+      margin: 25px 0;
+      height: 28px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #2ea043, #3fb950);
+      width: 0%;
+      border-radius: 12px;
+      transition: width 0.3s ease-in-out;
+    }
+
+    /* FIXED GRID */
+    .checkbox-container {
+      margin: 20px 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 768px) {
+      .checkbox-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (min-width: 1200px) {
+      .checkbox-container {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* CARD STYLE BOX */
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+      min-height: 120px;
+      background-color: #161b22;
+      border-radius: 14px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      font-size: 20px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+      text-align: center;
+    }
+    label:hover {
+      transform: translateY(-3px);
+      background-color: #1c2128;
+    }
+
+    input[type="checkbox"] {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 10px;
+      accent-color: #2ea043;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h2>Dynamic Checkboxes with Progress Bar (Dark Mode)</h2>
-  <input type="number" id="boxCount" placeholder="Enter number of boxes">
-  <button onclick="generateBoxes()">Generate</button>  <div class="progress-container">
+  <h2>Dynamic Checkboxes with Progress Bar</h2>
+  <div style="text-align:center; margin-bottom:20px;">
+    <input type="number" id="boxCount" placeholder="Enter number of boxes">
+    <button onclick="generateBoxes()">Generate</button>
+  </div>
+
+  <div class="progress-container">
     <div class="progress-bar" id="progressBar"></div>
-  </div>  <div class="checkbox-container" id="checkboxContainer"></div>  <script>
+  </div>
+
+  <div class="checkbox-container" id="checkboxContainer"></div>
+
+  <script>
     function generateBoxes() {
       const count = parseInt(document.getElementById('boxCount').value);
       localStorage.setItem('boxCount', count);
@@ -30,14 +122,13 @@
       container.innerHTML = '';
       for (let i = 1; i <= count; i++) {
         const label = document.createElement('label');
-        label.style.display = 'block';
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.dataset.index = i;
         checkbox.checked = JSON.parse(localStorage.getItem('checkedBoxes') || '[]').includes(i);
         checkbox.onchange = saveProgress;
         label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(' Day ' + i));
+        label.appendChild(document.createTextNode('Day ' + i));
         container.appendChild(label);
       }
       updateProgress();
@@ -67,5 +158,6 @@
         createCheckboxes(parseInt(savedCount));
       }
     };
-  </script></body>
+  </script>
+</body>
 </html>
